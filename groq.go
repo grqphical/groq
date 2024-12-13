@@ -71,3 +71,32 @@ func (g *GroqClient) GetModels() ([]Model, error) {
 
 	return response.Data, nil
 }
+
+// returns the information for a specific model
+func (g *GroqClient) GetModel(modelId string) (Model, error) {
+	req, err := createGroqRequest(fmt.Sprintf("/models/%s", modelId), g.apiKey)
+	if err != nil {
+		return Model{}, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return Model{}, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == 404 {
+			return Model{}, errors.New("invalid model id")
+		}
+		return Model{}, fmt.Errorf("request failed with status: %d %s", resp.StatusCode, resp.Status)
+	}
+
+	var model Model
+
+	err = json.NewDecoder(resp.Body).Decode(&model)
+	if err != nil {
+		return Model{}, err
+	}
+
+	return model, nil
+}
