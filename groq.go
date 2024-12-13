@@ -17,7 +17,7 @@ func createGroqRequest(endpoint string, apiKey string) (*http.Request, error) {
 		return nil, err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer: %s", apiKey))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", apiKey))
 
 	return req, nil
 }
