@@ -5,6 +5,11 @@ type GroqClient struct {
 	apiKey string
 }
 
+// a struct that represents the exact response returned by Groq's API
+type modelsResponse struct {
+	Data []Model `json:"data"`
+}
+
 // Model represents the metadata for an LLM hosted on Groqcloud
 type Model struct {
 	// the model's ID
