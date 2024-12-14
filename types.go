@@ -1,5 +1,11 @@
 package groq
 
+const (
+	MessageRoleUser      = "user"
+	MessageRoleSystem    = "system"
+	MessageRoleAsisstant = "assistant"
+)
+
 // GroqClient is the main client that interacts with the GroqCloud API
 type GroqClient struct {
 	apiKey string
@@ -72,6 +78,71 @@ type Transcription struct {
 	Text     string                 `json:"text"`
 	Segments []transcriptionSegment `json:"segments"`
 	XGroq    struct {
+		ID string `json:"id"`
+	} `json:"x_groq"`
+}
+
+type Message struct {
+	Role     string `json:"role"`
+	Content  string `json:"content"`
+	ImageURL struct {
+		URL string `json:"url"`
+	} `json:"image_url"`
+}
+
+type ChatCompletionRequest struct {
+	// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
+	// decreasing the model's likelihood to repeat the same line verbatim.
+	FrequencyPenalty float64 `json:"frequency_penalty"`
+
+	// Maximum amount of tokens that can be generated in the completion
+	MaxTokens int `json:"max_tokens"`
+
+	Messages []Message `json:"messages"`
+
+	Model string `json:"model"`
+
+	ParallelToolCalls bool `json:"parallel_tool_calls"`
+
+	// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
+	// increasing the model's likelihood to talk about new topics.
+	PresencePenalty float64 `json:"presence_penalty"`
+
+	ResponseFormat struct {
+		Type string `json:"type"`
+	} `json:"response_format"`
+
+	Seed   int      `json:"seed"`
+	Stop   []string `json:"stop"`
+	Stream bool     `json:"stream"`
+	// The sampling temperature, between 0 and 1.
+	Temperature float64 `json:"temperature"`
+	User        string  `json:"user"`
+	TopP        float64 `json:"top_p"`
+}
+
+type ChatCompletionResponse struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"`
+	Created int    `json:"created"`
+	Model   string `json:"model"`
+	Choices []struct {
+		Index        int     `json:"index"`
+		Message      Message `json:"message"`
+		Logprobs     any     `json:"logprobs"`
+		FinishReason string  `json:"finish_reason"`
+	} `json:"choices"`
+	Usage struct {
+		QueueTime        float64 `json:"queue_time"`
+		PromptTokens     int     `json:"prompt_tokens"`
+		PromptTime       float64 `json:"prompt_time"`
+		CompletionTokens int     `json:"completion_tokens"`
+		CompletionTime   float64 `json:"completion_time"`
+		TotalTokens      int     `json:"total_tokens"`
+		TotalTime        float64 `json:"total_time"`
+	} `json:"usage"`
+	SystemFingerprint string `json:"system_fingerprint"`
+	XGroq             struct {
 		ID string `json:"id"`
 	} `json:"x_groq"`
 }
