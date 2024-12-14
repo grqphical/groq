@@ -11,6 +11,53 @@ import (
 	"path/filepath"
 )
 
+type transcriptionSegment struct {
+	ID                string  `json:"id"`
+	Seek              float64 `json:"seek"`
+	Start             float64 `json:"start"`
+	End               float64 `json:"end"`
+	Text              string  `json:"text"`
+	Tokens            []int   `json:"tokens"`
+	Temperature       int     `json:"temperature"`
+	AvgLogProb        float64 `json:"avg_logprob"`
+	CompressionRation float64 `json:"compression_ratio"`
+	NoSpeechProb      float64 `json:"no_speech_prob"`
+}
+
+// TranscriptionConfig houses configuration options for transcription requests
+type TranscriptionConfig struct {
+	// What language the audio is in. if blank the model will guess it
+	Language string
+	// An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
+	Prompt string
+	// The format of the transcript output, in one of these options: json, text, or verbose_json
+	ResponseFormat string
+	// The sampling temperature, between 0 and 1.
+	Temperature float64
+}
+
+// TranslationConfig houses configuration options for translation requests
+type TranslationConfig struct {
+	// An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
+	Prompt string
+	// The format of the transcript output, in one of these options: json, text, or verbose_json
+	ResponseFormat string
+	// The sampling temperature, between 0 and 1.
+	Temperature float64
+}
+
+// Transcription represents an audio transcription/translation result from one of Groq's models
+type Transcription struct {
+	Task     string                 `json:"task"`
+	Language string                 `json:"language"`
+	Duration float64                `json:"duration"`
+	Text     string                 `json:"text"`
+	Segments []transcriptionSegment `json:"segments"`
+	XGroq    struct {
+		ID string `json:"id"`
+	} `json:"x_groq"`
+}
+
 // Transcribes a given audio file using one of Groq's hosted Whipser models
 func (g *GroqClient) TranscribeAudio(filename string, model string, config *TranscriptionConfig) (Transcription, error) {
 	req, err := createGroqRequest("audio/transcriptions", g.apiKey, "POST", nil)
