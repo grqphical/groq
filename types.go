@@ -54,7 +54,17 @@ type TranscriptionConfig struct {
 	Temperature float64 `json:"temperature"`
 }
 
-// Transcription represents an audio transcription result from one of Groq's models
+// TranslationConfig houses configuration options for translation requests
+type TranslationConfig struct {
+	// An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
+	Prompt string `json:"prompt"`
+	// The format of the transcript output, in one of these options: json, text, or verbose_json
+	ResponseFormat string `json:"response_format"`
+	// The sampling temperature, between 0 and 1.
+	Temperature float64 `json:"temperature"`
+}
+
+// Transcription represents an audio transcription/translation result from one of Groq's models
 type Transcription struct {
 	Task     string                 `json:"task"`
 	Language string                 `json:"language"`

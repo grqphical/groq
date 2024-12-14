@@ -103,3 +103,89 @@ func (g *GroqClient) TranscribeAudio(filename string, model string, config *Tran
 
 	return responseTranscription, nil
 }
+
+func (g *GroqClient) TranslateAudio(filename string, model string, config *TranslationConfig) (Transcription, error) {
+	req, err := createGroqRequest("audio/translations", g.apiKey, "POST")
+	if err != nil {
+		return Transcription{}, err
+	}
+
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return Transcription{}, err
+	}
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreateFormFile("file", filepath.Base(filename))
+	if err != nil {
+		return Transcription{}, err
+	}
+
+	_, err = io.Copy(part, bytes.NewReader(data))
+	if err != nil {
+		return Transcription{}, err
+	}
+
+	err = writer.WriteField("model", model)
+	if err != nil {
+		return Transcription{}, err
+	}
+
+	if config != nil {
+		if config.Prompt != "" {
+			err = writer.WriteField("prompt", config.Prompt)
+			if err != nil {
+				return Transcription{}, err
+			}
+		}
+		if config.ResponseFormat != "" {
+			err = writer.WriteField("response_format", config.ResponseFormat)
+			if err != nil {
+				return Transcription{}, err
+			}
+		}
+		if config.Temperature != 0 {
+			err = writer.WriteField("temperature", fmt.Sprintf("%f", config.Temperature))
+			if err != nil {
+				return Transcription{}, err
+			}
+		}
+	}
+
+	err = writer.Close()
+	if err != nil && err != io.EOF {
+		return Transcription{}, err
+	}
+
+	req.Body = io.NopCloser(body)
+
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return Transcription{}, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return Transcription{}, fmt.Errorf("request failed with status: %s", resp.Status)
+	}
+
+	var responseTranslation Transcription
+
+	if config != nil && config.ResponseFormat == "text" {
+		text, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return Transcription{}, err
+		}
+		responseTranslation.Text = string(text)
+	} else {
+		err = json.NewDecoder(resp.Body).Decode(&responseTranslation)
+		if err != nil {
+			return Transcription{}, err
+		}
+	}
+
+	return responseTranslation, nil
+}
