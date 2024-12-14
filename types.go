@@ -23,6 +23,51 @@ type Model struct {
 	OwnedBy string `json:"owned_by"`
 
 	// Is the model currently active?
-	Active        bool `json:"active"`
-	ContextWindow int  `json:"context_window"`
+	Active bool `json:"active"`
+
+	// How many context window tokens the model supports
+	ContextWindow int `json:"context_window"`
+}
+
+type transcriptionSegment struct {
+	ID                string  `json:"id"`
+	Seek              float64 `json:"seek"`
+	Start             float64 `json:"start"`
+	End               float64 `json:"end"`
+	Text              string  `json:"text"`
+	Tokens            []int   `json:"tokens"`
+	Temperature       int     `json:"temperature"`
+	AvgLogProb        float64 `json:"avg_logprob"`
+	CompressionRation float64 `json:"compression_ratio"`
+	NoSpeechProb      float64 `json:"no_speech_prob"`
+}
+
+// TranscriptionConfig houses configuration options for transcription requests
+type TranscriptionConfig struct {
+	Language       string  `json:"language"`
+	Prompt         string  `json:"prompt"`
+	ResponseFormat string  `json:"response_format"`
+	Temperature    float64 `json:"temperature"`
+}
+
+// this internal struct is used to create the request body for transcriptions
+type transcriptionRequest struct {
+	File           string  `json:"file"`
+	Language       string  `json:"language"`
+	Model          string  `json:"model"`
+	Prompt         string  `json:"prompt"`
+	ResponseFormat string  `json:"response_format"`
+	Temperature    float64 `json:"temperature"`
+}
+
+// Transcription represents an audio transcription result from one of Groq's models
+type Transcription struct {
+	Task     string                 `json:"task"`
+	Language string                 `json:"language"`
+	Duration float64                `json:"duration"`
+	Text     string                 `json:"text"`
+	Segments []transcriptionSegment `json:"segments"`
+	XGroq    struct {
+		ID string `json:"id"`
+	} `json:"x_groq"`
 }

@@ -11,8 +11,8 @@ import (
 )
 
 // creates an http.Request with the API key added to it and the URL set
-func createGroqRequest(endpoint string, apiKey string) (*http.Request, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.groq.com/openai/v1/%s", endpoint), nil)
+func createGroqRequest(endpoint string, apiKey string, method string) (*http.Request, error) {
+	req, err := http.NewRequest(method, fmt.Sprintf("https://api.groq.com/openai/v1/%s", endpoint), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func createGroqRequest(endpoint string, apiKey string) (*http.Request, error) {
 // Creates a new Groq client. Returns an error if the API key given is invalid
 func NewGroqClient(apiKey string) (*GroqClient, error) {
 	// test the API key
-	req, err := createGroqRequest("/models", apiKey)
+	req, err := createGroqRequest("/models", apiKey, "GET")
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func NewGroqClient(apiKey string) (*GroqClient, error) {
 
 // returns all models available on GroqCloud
 func (g *GroqClient) GetModels() ([]Model, error) {
-	req, err := createGroqRequest("/models", g.apiKey)
+	req, err := createGroqRequest("/models", g.apiKey, "GET")
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (g *GroqClient) GetModels() ([]Model, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("request failed with status: %d %s", resp.StatusCode, resp.Status)
+		return nil, fmt.Errorf("request failed with status: %s", resp.Status)
 	}
 
 	var response modelsResponse
@@ -74,7 +74,7 @@ func (g *GroqClient) GetModels() ([]Model, error) {
 
 // returns the information for a specific model
 func (g *GroqClient) GetModel(modelId string) (Model, error) {
-	req, err := createGroqRequest(fmt.Sprintf("/models/%s", modelId), g.apiKey)
+	req, err := createGroqRequest(fmt.Sprintf("/models/%s", modelId), g.apiKey, "GET")
 	if err != nil {
 		return Model{}, err
 	}
@@ -88,7 +88,7 @@ func (g *GroqClient) GetModel(modelId string) (Model, error) {
 		if resp.StatusCode == 404 {
 			return Model{}, errors.New("invalid model id")
 		}
-		return Model{}, fmt.Errorf("request failed with status: %d %s", resp.StatusCode, resp.Status)
+		return Model{}, fmt.Errorf("request failed with status: %s", resp.Status)
 	}
 
 	var model Model
