@@ -29,4 +29,3 @@ jobs:
         run: go test ./...
         env:
           GROQ_TOKEN: ${{ secrets.GROQ_TOKEN }}
-    environment: API Tests
