@@ -94,32 +94,24 @@ type Conversation struct {
 }
 
 type ChatCompletionRequest struct {
-	// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
-	// decreasing the model's likelihood to repeat the same line verbatim.
 	FrequencyPenalty float64 `json:"frequency_penalty,omitempty"`
-
-	// Maximum amount of tokens that can be generated in the completion
-	MaxTokens int `json:"max_tokens,omitempty"`
+	MaxTokens        int     `json:"max_tokens,omitempty"`
 
 	Messages []Message `json:"messages"`
 
-	Model string `json:"model"`
-
-	// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
-	// increasing the model's likelihood to talk about new topics.
+	Model           string  `json:"model"`
 	PresencePenalty float64 `json:"presence_penalty,omitempty"`
 
 	ResponseFormat struct {
 		Type string `json:"type,omitempty"`
 	} `json:"response_format,omitempty"`
 
-	Seed   int      `json:"seed,omitempty"`
-	Stop   []string `json:"stop,omitempty"`
-	Stream bool     `json:"stream,omitempty"`
-	// The sampling temperature, between 0 and 1.
-	Temperature float64 `json:"temperature,omitempty"`
-	User        string  `json:"user,omitempty"`
-	TopP        float64 `json:"top_p,omitempty"`
+	Seed        int      `json:"seed,omitempty"`
+	Stop        []string `json:"stop,omitempty"`
+	Stream      bool     `json:"stream,omitempty"`
+	Temperature float64  `json:"temperature,omitempty"`
+	User        string   `json:"user,omitempty"`
+	TopP        float64  `json:"top_p,omitempty"`
 }
 
 type ChatCompletionConfig struct {
@@ -144,7 +136,7 @@ type ChatCompletionConfig struct {
 	// Up to 4 sequences where the API will stop generating tokens
 	Stop []string
 
-	// Whether or not the API should stream responses
+	// Whether or not the API should stream responses. Currently UNSUPPORTED
 	Stream bool
 	// The sampling temperature, between 0 and 1.
 	Temperature float64

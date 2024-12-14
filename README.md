@@ -10,6 +10,8 @@ An **UNOFFICIAL** API wrapper for [Groq's](https://groq.com) API for Golang
 >
 > This is an unofficial project and is not affiliated with Groq in any way.
 
+Currently vision APIs and Streaming results are unsupported (I plan to have this complete soon)
+
 ## Installation
 
 Run:
