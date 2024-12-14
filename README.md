@@ -2,6 +2,7 @@
 
 ![GitHub License](https://img.shields.io/github/license/grqphical/groq)
 ![GitHub Tag](https://img.shields.io/github/v/tag/grqphical/groq?label=version)
+[![Go Tests](https://github.com/grqphical/groq/actions/workflows/go.yml/badge.svg)](https://github.com/grqphical/groq/actions/workflows/go.yml)
 
 An **UNOFFICIAL** API wrapper for [Groq's](https://groq.com) API for Golang
 
