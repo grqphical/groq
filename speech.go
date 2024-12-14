@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 )
 
+// Transcribes a given audio file using one of Groq's hosted Whipser models
 func (g *GroqClient) TranscribeAudio(filename string, model string, config *TranscriptionConfig) (Transcription, error) {
 	req, err := createGroqRequest("audio/transcriptions", g.apiKey, "POST")
 	if err != nil {
@@ -87,9 +88,17 @@ func (g *GroqClient) TranscribeAudio(filename string, model string, config *Tran
 
 	var responseTranscription Transcription
 
-	err = json.NewDecoder(resp.Body).Decode(&responseTranscription)
-	if err != nil {
-		return Transcription{}, err
+	if config != nil && config.ResponseFormat == "text" {
+		text, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return Transcription{}, err
+		}
+		responseTranscription.Text = string(text)
+	} else {
+		err = json.NewDecoder(resp.Body).Decode(&responseTranscription)
+		if err != nil {
+			return Transcription{}, err
+		}
 	}
 
 	return responseTranscription, nil

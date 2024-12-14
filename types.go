@@ -44,20 +44,14 @@ type transcriptionSegment struct {
 
 // TranscriptionConfig houses configuration options for transcription requests
 type TranscriptionConfig struct {
-	Language       string  `json:"language"`
-	Prompt         string  `json:"prompt"`
-	ResponseFormat string  `json:"response_format"`
-	Temperature    float64 `json:"temperature"`
-}
-
-// this internal struct is used to create the request body for transcriptions
-type transcriptionRequest struct {
-	File           string  `json:"file"`
-	Language       string  `json:"language"`
-	Model          string  `json:"model"`
-	Prompt         string  `json:"prompt"`
-	ResponseFormat string  `json:"response_format"`
-	Temperature    float64 `json:"temperature"`
+	// What language the audio is in. if blank the model will guess it
+	Language string `json:"language"`
+	// An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
+	Prompt string `json:"prompt"`
+	// The format of the transcript output, in one of these options: json, text, or verbose_json
+	ResponseFormat string `json:"response_format"`
+	// The sampling temperature, between 0 and 1.
+	Temperature float64 `json:"temperature"`
 }
 
 // Transcription represents an audio transcription result from one of Groq's models

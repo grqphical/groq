@@ -26,4 +26,11 @@ func TestTranscription(t *testing.T) {
 	transcription, err := client.TranscribeAudio("testdata/testAudio.mp3", "whisper-large-v3", nil)
 	assert.NoError(t, err)
 	assert.Equal(t, " The quick brown fox jumped over the lazy dog.", transcription.Text)
+
+	// test text responses
+	transcription, err = client.TranscribeAudio("testdata/testAudio.mp3", "whisper-large-v3", &groq.TranscriptionConfig{
+		ResponseFormat: "text",
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, " The quick brown fox jumped over the lazy dog.", transcription.Text)
 }
