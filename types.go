@@ -51,23 +51,23 @@ type transcriptionSegment struct {
 // TranscriptionConfig houses configuration options for transcription requests
 type TranscriptionConfig struct {
 	// What language the audio is in. if blank the model will guess it
-	Language string `json:"language"`
+	Language string
 	// An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
-	Prompt string `json:"prompt"`
+	Prompt string
 	// The format of the transcript output, in one of these options: json, text, or verbose_json
-	ResponseFormat string `json:"response_format"`
+	ResponseFormat string
 	// The sampling temperature, between 0 and 1.
-	Temperature float64 `json:"temperature"`
+	Temperature float64
 }
 
 // TranslationConfig houses configuration options for translation requests
 type TranslationConfig struct {
 	// An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
-	Prompt string `json:"prompt"`
+	Prompt string
 	// The format of the transcript output, in one of these options: json, text, or verbose_json
-	ResponseFormat string `json:"response_format"`
+	ResponseFormat string
 	// The sampling temperature, between 0 and 1.
-	Temperature float64 `json:"temperature"`
+	Temperature float64
 }
 
 // Transcription represents an audio transcription/translation result from one of Groq's models
@@ -105,8 +105,6 @@ type ChatCompletionRequest struct {
 
 	Model string `json:"model"`
 
-	ParallelToolCalls bool `json:"parallel_tool_calls,omitempty"`
-
 	// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
 	// increasing the model's likelihood to talk about new topics.
 	PresencePenalty float64 `json:"presence_penalty,omitempty"`
@@ -127,27 +125,38 @@ type ChatCompletionRequest struct {
 type ChatCompletionConfig struct {
 	// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
 	// decreasing the model's likelihood to repeat the same line verbatim.
-	FrequencyPenalty float64 `json:"frequency_penalty"`
+	FrequencyPenalty float64
 
 	// Maximum amount of tokens that can be generated in the completion
-	MaxTokens         int  `json:"max_tokens"`
-	ParallelToolCalls bool `json:"parallel_tool_calls"`
+	MaxTokens int
 
 	// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
 	// increasing the model's likelihood to talk about new topics.
-	PresencePenalty float64 `json:"presence_penalty"`
+	PresencePenalty float64
 
 	ResponseFormat struct {
-		Type string `json:"type"`
-	} `json:"response_format"`
+		Type string
+	}
 
-	Seed   int      `json:"seed"`
-	Stop   []string `json:"stop"`
-	Stream bool     `json:"stream"`
+	// Random seed for the model
+	Seed int
+
+	// Up to 4 sequences where the API will stop generating tokens
+	Stop []string
+
+	// Whether or not the API should stream responses
+	Stream bool
 	// The sampling temperature, between 0 and 1.
-	Temperature float64 `json:"temperature"`
-	User        string  `json:"user"`
-	TopP        float64 `json:"top_p"`
+	Temperature float64
+
+	// Unique identifier for your end-user
+	User string
+
+	// An alternative to sampling with temperature, called nucleus sampling,
+	// where the model considers the results of the tokens with top_p probability mass.
+	// So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+	// DO NOT altering this if you have altered temperature and vice versa.
+	TopP float64
 }
 
 type ChatCompletionResponse struct {
