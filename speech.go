@@ -104,6 +104,7 @@ func (g *GroqClient) TranscribeAudio(filename string, model string, config *Tran
 	return responseTranscription, nil
 }
 
+// Translates a given audio file into English.
 func (g *GroqClient) TranslateAudio(filename string, model string, config *TranslationConfig) (Transcription, error) {
 	req, err := createGroqRequest("audio/translations", g.apiKey, "POST")
 	if err != nil {
