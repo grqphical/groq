@@ -3,7 +3,7 @@ package groq
 const (
 	MessageRoleUser      = "user"
 	MessageRoleSystem    = "system"
-	MessageRoleAsisstant = "assistant"
+	MessageRoleAssistant = "assistant"
 )
 
 // GroqClient is the main client that interacts with the GroqCloud API
@@ -83,25 +83,54 @@ type Transcription struct {
 }
 
 type Message struct {
-	Role     string `json:"role"`
-	Content  string `json:"content"`
-	ImageURL struct {
-		URL string `json:"url"`
-	} `json:"image_url"`
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// Conversation is a struct that allows you to construct chat completion requests
+type Conversation struct {
+	messages     []Message
+	systemPrompt string
 }
 
 type ChatCompletionRequest struct {
 	// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
 	// decreasing the model's likelihood to repeat the same line verbatim.
-	FrequencyPenalty float64 `json:"frequency_penalty"`
+	FrequencyPenalty float64 `json:"frequency_penalty,omitempty"`
 
 	// Maximum amount of tokens that can be generated in the completion
-	MaxTokens int `json:"max_tokens"`
+	MaxTokens int `json:"max_tokens,omitempty"`
 
 	Messages []Message `json:"messages"`
 
 	Model string `json:"model"`
 
+	ParallelToolCalls bool `json:"parallel_tool_calls,omitempty"`
+
+	// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
+	// increasing the model's likelihood to talk about new topics.
+	PresencePenalty float64 `json:"presence_penalty,omitempty"`
+
+	ResponseFormat struct {
+		Type string `json:"type,omitempty"`
+	} `json:"response_format,omitempty"`
+
+	Seed   int      `json:"seed,omitempty"`
+	Stop   []string `json:"stop,omitempty"`
+	Stream bool     `json:"stream,omitempty"`
+	// The sampling temperature, between 0 and 1.
+	Temperature float64 `json:"temperature,omitempty"`
+	User        string  `json:"user,omitempty"`
+	TopP        float64 `json:"top_p,omitempty"`
+}
+
+type ChatCompletionConfig struct {
+	// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
+	// decreasing the model's likelihood to repeat the same line verbatim.
+	FrequencyPenalty float64 `json:"frequency_penalty"`
+
+	// Maximum amount of tokens that can be generated in the completion
+	MaxTokens         int  `json:"max_tokens"`
 	ParallelToolCalls bool `json:"parallel_tool_calls"`
 
 	// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,

@@ -13,7 +13,7 @@ import (
 
 // Transcribes a given audio file using one of Groq's hosted Whipser models
 func (g *GroqClient) TranscribeAudio(filename string, model string, config *TranscriptionConfig) (Transcription, error) {
-	req, err := createGroqRequest("audio/transcriptions", g.apiKey, "POST")
+	req, err := createGroqRequest("audio/transcriptions", g.apiKey, "POST", nil)
 	if err != nil {
 		return Transcription{}, err
 	}
@@ -106,7 +106,7 @@ func (g *GroqClient) TranscribeAudio(filename string, model string, config *Tran
 
 // Translates a given audio file into English.
 func (g *GroqClient) TranslateAudio(filename string, model string, config *TranslationConfig) (Transcription, error) {
-	req, err := createGroqRequest("audio/translations", g.apiKey, "POST")
+	req, err := createGroqRequest("audio/translations", g.apiKey, "POST", nil)
 	if err != nil {
 		return Transcription{}, err
 	}

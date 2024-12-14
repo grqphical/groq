@@ -7,12 +7,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
 // creates an http.Request with the API key added to it and the URL set
-func createGroqRequest(endpoint string, apiKey string, method string) (*http.Request, error) {
-	req, err := http.NewRequest(method, fmt.Sprintf("https://api.groq.com/openai/v1/%s", endpoint), nil)
+func createGroqRequest(endpoint string, apiKey string, method string, body io.Reader) (*http.Request, error) {
+	req, err := http.NewRequest(method, fmt.Sprintf("https://api.groq.com/openai/v1/%s", endpoint), body)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +26,7 @@ func createGroqRequest(endpoint string, apiKey string, method string) (*http.Req
 // Creates a new Groq client. Returns an error if the API key given is invalid
 func NewGroqClient(apiKey string) (*GroqClient, error) {
 	// test the API key
-	req, err := createGroqRequest("/models", apiKey, "GET")
+	req, err := createGroqRequest("/models", apiKey, "GET", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +49,7 @@ func NewGroqClient(apiKey string) (*GroqClient, error) {
 
 // returns all models available on GroqCloud
 func (g *GroqClient) GetModels() ([]Model, error) {
-	req, err := createGroqRequest("/models", g.apiKey, "GET")
+	req, err := createGroqRequest("/models", g.apiKey, "GET", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +75,7 @@ func (g *GroqClient) GetModels() ([]Model, error) {
 
 // returns the information for a specific model
 func (g *GroqClient) GetModel(modelId string) (Model, error) {
-	req, err := createGroqRequest(fmt.Sprintf("/models/%s", modelId), g.apiKey, "GET")
+	req, err := createGroqRequest(fmt.Sprintf("/models/%s", modelId), g.apiKey, "GET", nil)
 	if err != nil {
 		return Model{}, err
 	}
